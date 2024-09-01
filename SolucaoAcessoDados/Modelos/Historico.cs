@@ -1,30 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Modelos
 {
+    [Table("Historico")]
     public class Historico
     {
-        public int IntCodigo { get; set; }
-        public int IntOperador { get; set; }
-        public int EnuAcao { get; set; }
-        public string JsoDados { get; set; }
-        public DateTime DtmDataAcao { get; set; }
+        [Key]
+        public int intCodigo { get; set; }
+        public int intOperador { get; set; }
+        public int enuAcao { get; set; }
+        public string jsoDados { get; set; }
+        public DateTime dtmDataAcao { get; set; }
 
         public void ValidateArgs()
         {
-            if (IntOperador <= 0)
+            if (intOperador <= 0)
             {
                 throw new ArgumentException("Código do operador deve ser maior que zero");
             }
-            if (EnuAcao <= 0)
+            if (enuAcao <= 0)
             {
                 throw new ArgumentException("Operação deve ser maior que zero");
             }
-            if (DtmDataAcao == null)
+            if (dtmDataAcao == null)
             {
                 throw new ArgumentException("Data da ação não pode ser nula");
             }

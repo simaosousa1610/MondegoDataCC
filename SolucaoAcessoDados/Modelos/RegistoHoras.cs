@@ -1,51 +1,47 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Modelos
 {
+    [Table("RegistoHoras")]
     public class RegistoHoras
     {
-        public int IntCodigo { get; set; }
-        public int IntOperador { get; set; }
-        public DateTime DtmInicio { get; set; }
-        public DateTime DtmFim { get; set; }
-        public float FltPrecoHora { get; set; }
-        public float FltPrecoTotal { get; set; }
-        public bool BitValidado { get; set; }
-        public bool BitAtivo { get; set; }
+        [Key]
+        public int intCodigo { get; set; }
+        public int intOperador { get; set; }
+        public DateTime dtmInicio { get; set; }
+        public DateTime dtmFim { get; set; }
+        public float fltPrecoHora { get; set; }
+        public float fltPrecoTotal { get; set; }
+        public bool bitValidado { get; set; }
+        public bool bitAtivo { get; set; }
 
         public void ValidateArgs()
         {
-            if (IntOperador <= 0)
+            if (intOperador <= 0)
             {
                 throw new ArgumentException("Código do operador deve ser maior que zero");
             }
-            if (DtmInicio == null)
+            if (dtmInicio == null)
             {
                 throw new ArgumentException("Data de início não pode ser nula");
             }
-            if (DtmFim == null)
+            if (dtmFim == null)
             {
                 throw new ArgumentException("Data de fim não pode ser nula");
             }
-            if (FltPrecoHora <= 0)
+            if (fltPrecoHora <= 0)
             {
                 throw new ArgumentException("Preço da hora deve ser maior que zero");
             }
-            if (FltPrecoTotal <= 0)
+            if (fltPrecoTotal <= 0)
             {
                 throw new ArgumentException("Preço total deve ser maior que zero");
-            }
-            if (BitValidado == null)
-            {
-                throw new ArgumentException("Validado deve ser verdadeiro ou falso");
-            }
-            if (BitAtivo == null)
-            {
-                throw new ArgumentException("Ativo deve ser verdadeiro ou falso");
             }
         }
     }
