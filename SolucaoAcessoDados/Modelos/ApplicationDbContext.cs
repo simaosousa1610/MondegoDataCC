@@ -21,6 +21,7 @@ namespace Modelos
         public DbSet<Acesso> Acesso { get; set; }
         public DbSet<RegistoHoras> RegistosHoras { get; set; }
         public DbSet<Historico> Historico { get; set; }
+        public DbSet<Acao> Acao { get; set; }
         public ApplicationDbContext() : base("name=DefaultConnection")
         {
         }

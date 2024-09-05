@@ -76,6 +76,17 @@ namespace Controladores
                 // Verificar se a senha está correta
                 if (!operador.VerifyPassword(password)) return "Wrong Password";
 
+                // add to history 
+                var history = new Historico
+                {
+                    intOperador = operador.intCodigo,
+                    dtmDataAcao = DateTime.Now,
+                    enuAcao = _context.Acao.FirstOrDefault(a => a.tipo == "login").intCodigo
+                };
+
+                _context.Historico.Add(history);
+                _context.SaveChanges();
+
                 return "Login Successfull";
             }
             catch (Exception e)

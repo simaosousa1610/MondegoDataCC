@@ -23,6 +23,24 @@ namespace Controladores
             return acessos;
         }
 
+        public List<Aplicacao> ListAplicacoes()
+        {
+            var aplicacoes = _context.Aplicacoes.ToList();
+            return aplicacoes;
+        }
+
+        public List<RegistoHoras> ListRegistosHoras()
+        {
+            var registosHoras = _context.RegistosHoras.ToList();
+            return registosHoras;
+        }
+
+        public List<Historico> ListHistorico()
+        {
+            var historico = _context.Historico.ToList();
+            return historico;
+        }
+
         public Operadores GetOperador(int id)
         {
             var operador = _context.Operadores.Find(id);
@@ -35,10 +53,37 @@ namespace Controladores
             return acesso;
         }
 
-        public List<Aplicacao> ListAplicacoes() {
-            var aplicacoes = _context.Aplicacoes.ToList();
-            return aplicacoes;
+        public Aplicacao GetAplicacao(int id)
+        {
+            var aplicacao = _context.Aplicacoes.Find(id);
+            return aplicacao;
         }
+
+        public RegistoHoras GetRegistoHoras(int id)
+        {
+            var registoHoras = _context.RegistosHoras.Find(id);
+            return registoHoras;
+        }
+
+        public Historico GetHistorico(int id)
+        {
+            var historico = _context.Historico.Find(id);
+            return historico;
+        }
+
+        public Acao GetAcao(int id)
+        {
+            var acao = _context.Acao.Find(id);
+            return acao;
+        }
+
+        public List<Acao> ListAcao()
+        {
+            var acoes = _context.Acao.ToList();
+            return acoes;
+        }
+
+
         public int EditOperador(Operadores operador)
         {
             try
@@ -108,6 +153,7 @@ namespace Controladores
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
+                throw;
                 return -1;
             }
         }

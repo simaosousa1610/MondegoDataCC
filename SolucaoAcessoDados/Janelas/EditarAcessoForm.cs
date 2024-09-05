@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -15,12 +16,22 @@ namespace Janelas
     public partial class EditarAcessoForm : Form
     {
         BackofficeMenu BackofficeMenu;
-        int selectedAcessoId;
+        Aplicacao App;
+        int selectedAcessoId = 0;
 
-        public EditarAcessoForm(int selectedAcessoId, BackofficeMenu backofficeMenu)
+        public EditarAcessoForm(int selectedAcessoId, BackofficeMenu backofficeMenu, Aplicacao app)
         {
+            this.App = app;
             this.BackofficeMenu = backofficeMenu;
             this.selectedAcessoId = selectedAcessoId;
+            InitializeComponent();
+        }
+
+        public EditarAcessoForm(BackofficeMenu backofficeMenu, Aplicacao app)
+        {
+            this.App = app;
+            this.BackofficeMenu = backofficeMenu;
+            selectedAcessoId = 0;
             InitializeComponent();
         }
 
@@ -45,30 +56,35 @@ namespace Janelas
         private void EditarAcessoForm_Load(object sender, EventArgs e)
         {
             LoadOperadores();
-            textBox3.Text = BackofficeMenu.GetAcesso(selectedAcessoId).strToken;
+            if (selectedAcessoId != 0)
+                textBox3.Text = BackofficeMenu.GetAcesso(selectedAcessoId).strToken;
         }
 
         private void button1_Click_1(object sender, EventArgs e)
         {
-            // get the selected operador and the token from the text box
             var operador = (Modelos.Operadores)comboBox1.SelectedItem;
             string token = textBox3.Text;
 
-            // create a new Acesso object with the selected operador and token
+            // get the application 
             Acesso acesso = new Acesso();
             acesso.intCodigo = selectedAcessoId;
             acesso.intOperador = operador.intCodigo;
+            acesso.intAplicacao = App.intCodigo;
             acesso.bitAtivo = checkBox2.Checked;
             acesso.strToken = token;
 
-            if (BackofficeMenu.EditAcesso(acesso) == 0)
-            {
-                MessageBox.Show("Acesso editado com sucesso!");
-            }
+            if (selectedAcessoId == 0)
+                if (BackofficeMenu.AddAcesso(acesso) == 0)
+                    MessageBox.Show("Acesso adicionado com sucesso!");
+                else
+                    MessageBox.Show("Erro ao adicionar o acesso!");
             else
-            {
-                MessageBox.Show("Erro ao editar o acesso!");
-            }
+                if (BackofficeMenu.EditAcesso(acesso) == 0)
+                    MessageBox.Show("Acesso editado com sucesso!");
+                else
+                    MessageBox.Show("Erro ao editar o acesso!");
+
+            
 
             this.Close();
         }

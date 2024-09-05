@@ -3,4 +3,3 @@
     [tipo]      NVARCHAR (15) NULL,
     PRIMARY KEY CLUSTERED ([intCodigo] ASC)
 );
-
