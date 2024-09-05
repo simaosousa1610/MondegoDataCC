@@ -24,17 +24,14 @@ namespace Janelas
 
             int resultado = loginControlador.checkIfNoBackOfficeUsers();
 
-            if (resultado == 1)
+            if (resultado == 0)
             {
                 Application.Run(new NovoOperador(loginControlador));
             }
-            else if (resultado == -1)
+            else
             {
-                MessageBox.Show("An error occurred. Please check the logs.");
-                Application.Exit();
+                Application.Run(new Login(loginControlador));
             }
-            Application.Run(new Login(loginControlador));
-
         }
     }
 }

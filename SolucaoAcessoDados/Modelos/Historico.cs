@@ -13,27 +13,20 @@ namespace Modelos
     {
         [Key]
         public int intCodigo { get; set; }
+
+        [Required]
         public int intOperador { get; set; }
+
+        [ForeignKey("intOperador")]
+        public virtual Operadores Operadores { get; set; }
+
+        [Required]
         public int enuAcao { get; set; }
+        
         public string jsoDados { get; set; }
+
+        [Required]
         public DateTime dtmDataAcao { get; set; }
 
-        public void ValidateArgs()
-        {
-            if (intOperador <= 0)
-            {
-                throw new ArgumentException("Código do operador deve ser maior que zero");
-            }
-            if (enuAcao <= 0)
-            {
-                throw new ArgumentException("Operação deve ser maior que zero");
-            }
-            if (dtmDataAcao == null)
-            {
-                throw new ArgumentException("Data da ação não pode ser nula");
-            }
-        }
     }
-
-    
 }

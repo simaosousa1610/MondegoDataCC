@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Security.Cryptography;
 
 namespace Modelos
 {
@@ -11,19 +12,41 @@ namespace Modelos
 
         [Required]
         [StringLength(50)]
-        [Column]
         public string strNome { get; set; }
 
         [Required]
-        [Column]
         public byte[] strPasswordHash { get; set; }
 
         [Required]
-        [Column]
+        public byte[] strPasswordSalt { get; set; }
+
+        [Required]
+        [Column(TypeName = "float")]
         public float fltPrecoHora { get; set; }
 
         [Required]
-        [Column]
         public bool bitAtivo { get; set; }
+
+        public void SetPassword(string password)
+        {
+            using (var hmac = new HMACSHA512())
+            {
+                strPasswordSalt = hmac.Key; // 64 bytes
+                strPasswordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+            }
+        }
+
+        public bool VerifyPassword(string password)
+        {
+            using (var hmac = new HMACSHA512(strPasswordSalt))
+            {
+                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+                for (int i = 0; i < computedHash.Length; i++)
+                {
+                    if (computedHash[i] != strPasswordHash[i]) return false;
+                }
+            }
+            return true;
+        }
     }
 }

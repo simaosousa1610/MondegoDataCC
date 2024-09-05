@@ -43,7 +43,18 @@ namespace Janelas
             else
             {
                 var resultado = loginControlador.criarOperadorBackOffice(username, password);
-                MessageBox.Show(resultado);
+                if (resultado == "Login Successfull")
+                {
+                    this.Close();
+                    BackofficeMenu backofficeMenu = new BackofficeMenu();
+                    Menu menu = new Menu(backofficeMenu);
+                    menu.Show();
+                    menu.Focus();
+                }
+                else
+                {
+                    MessageBox.Show(resultado);
+                }
             }
         }
     }

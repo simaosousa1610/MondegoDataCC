@@ -16,25 +16,17 @@ namespace Controladores
         {
             try
             {
-                // check if theres an user with active status that has access to the backoffice
+                // check if there are any backoffice users in the database with ative access  
                 var backOfficeApp = _context.Aplicacoes.FirstOrDefault(ap => ap.strNome == "BackOffice");
                 if (backOfficeApp == null) return -1;
 
-                var operadores = _context.Operadores.Where(o => o.bitAtivo == true).ToList();
-                if (operadores.Count == 0) return 1;
-
-                var acessos = _context.Acesso.Where(a => a.intAplicacao == backOfficeApp.intCodigo).ToList();
-                if (acessos.Count == 0) return 1;
-
-                var backOfficeUsers = operadores
-                    .Join(acessos, o => o.intCodigo, a => a.intOperador, (o, a) => new { o, a })
-                    .Where(oa => oa.a.bitAtivo == true)
+                var backOfficeUsers = _context.Acesso
+                    .Where(a => a.intAplicacao == backOfficeApp.intCodigo)
+                    .ToList()
+                    .Where(a => a.bitAtivo == true)
                     .ToList();
 
-                if (backOfficeUsers.Count == 0) return 1;
-
-                return 0;
-
+                return backOfficeUsers.Count;
             }
             catch (Exception e)
             {
@@ -43,101 +35,107 @@ namespace Controladores
             return 0;
         }
 
-        public string CheckCredentials(string username, string password)
+        public string CheckCredentials(string username, string password, int app)
         {
-            // Hash the password
-            using (var sha1 = new SHA1CryptoServiceProvider())
+            try
             {
-                var passwordHash = Encoding.ASCII.GetBytes(password);
-                var passwordHashed = sha1.ComputeHash(passwordHash);
+                // Verificar se o usuário existe e se está ativo
+                var operador = _context.Operadores.FirstOrDefault(op => op.strNome == username);
+                if (operador == null || !operador.bitAtivo) return "Invalid username or password";
 
-                try
+                switch (app)
                 {
-                    var backOfficeApp = _context.Aplicacoes.FirstOrDefault(ap => ap.strNome == "BackOffice");
-                    if (backOfficeApp == null) return "Application not found.";
+                    case 1:
+                        // Verificar se o usuário tem acesso ao BackOffice
+                        var backOfficeApp = _context.Aplicacoes.FirstOrDefault(ap => ap.strNome == "BackOffice");
+                        if (backOfficeApp == null) return "No backoffice available";
 
-                    // Load the operator into memory
-                    var operador = _context.Operadores
-                        .Where(o => o.strNome == username)
-                        .ToList()
-                        .FirstOrDefault(o => o.strPasswordHash.SequenceEqual(passwordHashed));
+                        var acesso = _context.Acesso.FirstOrDefault(ac => ac.intOperador == operador.intCodigo && ac.intAplicacao == backOfficeApp.intCodigo);
+                        if (acesso == null || !acesso.bitAtivo) return "No access to BackOffice";
+                        break;
+                    case 2:
+                        // Verificar se o usuário tem acesso ao FrontOffice
+                        var frontOfficeApp = _context.Aplicacoes.FirstOrDefault(ap => ap.strNome == "FrontOffice");
+                        if (frontOfficeApp == null) return "No frontoffice available";
 
-                    if (operador == null) return "Not found.";
+                        var acessoFrontOffice = _context.Acesso.FirstOrDefault(ac => ac.intOperador == operador.intCodigo && ac.intAplicacao == frontOfficeApp.intCodigo);
+                        if (acessoFrontOffice == null || !acessoFrontOffice.bitAtivo) return "No access to FrontOffice";
+                        break;
+                    case 3:
+                        // Verificar se o usuário tem acesso ao API
+                        var apiApp = _context.Aplicacoes.FirstOrDefault(ap => ap.strNome == "API");
+                        if (apiApp == null) return "No API available";
 
-                    var acesso = _context.Acesso.FirstOrDefault(a => a.intAplicacao == backOfficeApp.intCodigo && a.intOperador == operador.intCodigo);
-                    return acesso == null ? "Not found." : "Found.";
+                        var acessoAPI = _context.Acesso.FirstOrDefault(ac => ac.intOperador == operador.intCodigo && ac.intAplicacao == apiApp.intCodigo);
+                        if (acessoAPI == null || !acessoAPI.bitAtivo) return "No access to API";
+                        break;
+                    default:
+                        return "Invalid application";
                 }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.Message);
-                    return e.Message;
-                }
+
+                // Verificar se a senha está correta
+                if (!operador.VerifyPassword(password)) return "Wrong Password";
+
+                return "Login Successfull";
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return "Error";
             }
         }
 
         public string criarOperadorBackOffice(string username, string password)
         {
-            using (var sha1 = new SHA1CryptoServiceProvider())
+            try
             {
-                var passwordHash = Encoding.ASCII.GetBytes(password);
-                var passwordHashed = sha1.ComputeHash(passwordHash);
-
-                try
+                using (var transaction = _context.Database.BeginTransaction())
                 {
-                    using (var transaction = _context.Database.BeginTransaction())
+                    // Obtém a aplicação BackOffice
+                    var backOfficeApp = _context.Aplicacoes.FirstOrDefault(ap => ap.strNome == "BackOffice");
+                    if (backOfficeApp == null) return "No backoffice available";
+
+                    float fltPrecoHoraFloat = (float) 0;
+
+                    var operador = new Operadores
                     {
-                        // Obtém a aplicação BackOffice
-                        var backOfficeApp = _context.Aplicacoes.FirstOrDefault(ap => ap.strNome == "BackOffice");
-                        if (backOfficeApp == null) return "No backoffice";
+                        strNome = username,
+                        fltPrecoHora = fltPrecoHoraFloat, 
+                        bitAtivo = true
+                    };
 
-                        var operador = new Operadores
-                        {
-                            strNome = username,
-                            strPasswordHash = passwordHashed,
-                            fltPrecoHora = 0.0f,
-                            bitAtivo = true
-                        };
+                    operador.SetPassword(password);
 
-                        _context.Operadores.Add(operador);
-                        _context.SaveChanges(); // Salva para garantir que o operador tenha um intCodigo gerado
-                        var acesso = new Acesso
-                        {
-                            intOperador = operador.intCodigo, // Usa o intCodigo gerado
-                            intAplicacao = backOfficeApp.intCodigo,
-                            strToken = null, // Permite valor nulo para strToken
-                            bitAtivo = true
-                        };
+                    _context.Operadores.Add(operador);
+                    _context.SaveChanges(); // Salva para garantir que o operador tenha um intCodigo gerado
 
-                        acesso = _context.Acesso.Add(acesso);
+                    var acesso = new Acesso
+                    {
+                        intOperador = operador.intCodigo, // Usa o intCodigo gerado
+                        intAplicacao = backOfficeApp.intCodigo,
+                        strToken = null, // Permite valor nulo para strToken
+                        bitAtivo = true
+                    };
 
-                        // debug the result of the add operation
-                        Console.WriteLine($"Acesso intCodigo: {acesso.intCodigo}");
-                        Console.WriteLine($"Acesso intOperador: {acesso.intOperador}");
-                        Console.WriteLine($"Acesso intAplicacao: {acesso.intAplicacao}");
-                        Console.WriteLine($"Acesso strToken: {acesso.strToken}");
-                        Console.WriteLine($"Acesso bitAtivo: {acesso.bitAtivo}");
+                    acesso = _context.Acesso.Add(acesso);
 
-                        _context.SaveChanges();
+                    _context.SaveChanges();
 
-                        transaction.Commit();
+                    transaction.Commit();
 
-                        return "Success";
-                    }
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine("Exception Message: " + e.Message);
-                    
-                    if( e.InnerException != null ) {
-                        Console.WriteLine("Inner Exception Message: " + e.InnerException.Message);
-                    }
-                    throw;
-
-                    return e.StackTrace;
+                    return "Login Successfull";
                 }
             }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception Message: " + e.Message);
+
+                if (e.InnerException != null)
+                {
+                    Console.WriteLine("Inner Exception Message: " + e.InnerException.Message);
+                }
+                return "Error";
+            }
         }
-
-
     }
 }

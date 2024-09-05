@@ -50,6 +50,8 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Entity" />
     <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Management" />
     <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
@@ -82,11 +84,32 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdicionarOperadorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AdicionarOperadorForm.Designer.cs">
+      <DependentUpon>AdicionarOperadorForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="EditarAcessoForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EditarAcessoForm.Designer.cs">
+      <DependentUpon>EditarAcessoForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="EditarOperadorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EditarOperadorForm.Designer.cs">
+      <DependentUpon>EditarOperadorForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Login.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Login.Designer.cs">
       <DependentUpon>Login.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Menu.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="NovoOperador.cs">
       <SubType>Form</SubType>
@@ -96,8 +119,20 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="AdicionarOperadorForm.resx">
+      <DependentUpon>AdicionarOperadorForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EditarAcessoForm.resx">
+      <DependentUpon>EditarAcessoForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EditarOperadorForm.resx">
+      <DependentUpon>EditarOperadorForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Login.resx">
       <DependentUpon>Login.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Menu.resx">
+      <DependentUpon>Menu.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="NovoOperador.resx">
       <DependentUpon>NovoOperador.cs</DependentUpon>
@@ -129,6 +164,10 @@
     <ProjectReference Include="..\Controladores\Controladores.csproj">
       <Project>{784a4b43-bd96-479e-9c89-b4f9b9c47788}</Project>
       <Name>Controladores</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Modelos\Modelos.csproj">
+      <Project>{FBE98E36-A9E3-4DBF-A875-61F40E7929C4}</Project>
+      <Name>Modelos</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

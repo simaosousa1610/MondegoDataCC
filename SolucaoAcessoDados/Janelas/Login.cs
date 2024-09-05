@@ -17,8 +17,7 @@ namespace Janelas
         public Login(LoginControlador loginControlador)
         {
             this.loginControlador = loginControlador;
-            InitializeComponent();
-            
+            InitializeComponent(); 
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -33,8 +32,20 @@ namespace Janelas
                 MessageBox.Show("Invalid username or password!");
             }
             else {
-                var resultado = loginControlador.CheckCredentials(username, password);
-                MessageBox.Show(resultado);
+                var resultado = loginControlador.CheckCredentials(username, password,1);
+                // how to open the next window?
+                if (resultado == "Login Successfull")
+                {
+                    this.Hide();
+                    BackofficeMenu backofficeMenu = new BackofficeMenu();
+                    Menu menu = new Menu(backofficeMenu);
+                    menu.Show();
+                    menu.Focus();
+                }
+                else
+                {
+                    MessageBox.Show(resultado);
+                }
             }
         }
 

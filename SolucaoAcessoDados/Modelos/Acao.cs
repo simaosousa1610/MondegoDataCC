@@ -15,7 +15,6 @@ namespace Modelos
         public int intCodigo { get; set; }
 
         [Required]
-        [Column]
         public string tipo { get; set; }
     }
 }
