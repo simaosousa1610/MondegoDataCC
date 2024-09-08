@@ -27,9 +27,11 @@ namespace Modelos
         public DateTime dtmFim { get; set; }
 
         [Required]
+        [Column(TypeName = "float")]
         public float fltPrecoHora { get; set; }
 
         [Required]
+        [Column(TypeName = "float")]
         public float fltPrecoTotal { get; set; }
 
         [Required]

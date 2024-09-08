@@ -96,6 +96,7 @@ namespace Janelas
             this.textBox4.Name = "textBox4";
             this.textBox4.Size = new System.Drawing.Size(251, 22);
             this.textBox4.TabIndex = 2;
+            this.textBox4.UseSystemPasswordChar = true;
             // 
             // textBox5
             // 

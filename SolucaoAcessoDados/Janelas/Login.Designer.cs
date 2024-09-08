@@ -71,6 +71,7 @@
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(413, 22);
             this.textBox2.TabIndex = 3;
+            this.textBox2.UseSystemPasswordChar = true;
             // 
             // label2
             // 
@@ -111,7 +112,6 @@
             this.Text = "Login";
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
 
         #endregion

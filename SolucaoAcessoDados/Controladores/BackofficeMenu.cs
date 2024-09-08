@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Helpers;
 
 namespace Controladores
 {
@@ -153,7 +154,85 @@ namespace Controladores
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
-                throw;
+                return -1;
+            }
+        }
+
+        public int ValidarRegisto(int selectedRegistoId)
+        {
+            try
+            {
+                var registo = this.GetRegistoHoras(selectedRegistoId);
+                if (registo == null) { return -1; }
+                registo.bitValidado = true;
+
+                Historico historico = new Historico();
+                historico.intOperador = registo.intOperador;
+                historico.enuAcao = 2;
+                historico.jsoDados = Json.Encode(new { registo = registo });
+                historico.dtmDataAcao = DateTime.Now;
+                _context.Historico.Add(historico);
+
+                _context.SaveChanges();
+
+                return 0;
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return -1;
+            }
+        }
+
+        public int AddRegisto(RegistoHoras registo)
+        {
+            try {
+                _context.RegistosHoras.Add(registo);
+
+                Historico historico = new Historico();
+                historico.intOperador = registo.intOperador;
+                historico.enuAcao = 2;
+                historico.jsoDados = Json.Encode(new { registo = registo });
+                historico.dtmDataAcao = DateTime.Now;
+                _context.Historico.Add(historico);
+
+                _context.SaveChanges();
+                return 0;
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return -1;
+            }
+        }
+
+        public int EditRegisto(RegistoHoras registo)
+        {
+            try
+            {
+                var registoInDb = _context.RegistosHoras.Find(registo.intCodigo);
+                if (registoInDb == null) { return -1; }
+                registoInDb.dtmInicio = registo.dtmInicio;
+                registoInDb.dtmFim = registo.dtmFim;
+                registoInDb.fltPrecoHora = registo.fltPrecoHora;
+                registoInDb.fltPrecoTotal = registo.fltPrecoTotal;
+                registoInDb.bitValidado = registo.bitValidado;
+                registoInDb.bitAtivo = registo.bitAtivo;
+
+                Historico historico = new Historico();
+                historico.intOperador = registo.intOperador;
+                historico.enuAcao = 2;
+                historico.jsoDados = Json.Encode(new { registo = registo });
+                historico.dtmDataAcao = DateTime.Now;
+                _context.Historico.Add(historico);  
+
+                _context.SaveChanges();
+
+                return 0;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
                 return -1;
             }
         }

@@ -22,15 +22,34 @@ namespace Janelas
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
+            // Check if there are no BackOffice users
             int resultado = loginControlador.checkIfNoBackOfficeUsers();
 
+            // If no users exist, create a new operator
             if (resultado == 0)
             {
-                Application.Run(new NovoOperador(loginControlador));
+                using (NovoOperador novoOperadorForm = new NovoOperador(loginControlador))
+                {
+                    if (novoOperadorForm.ShowDialog() != DialogResult.OK)
+                    {
+                        // If operator creation fails, exit the application
+                        return;
+                    }
+                }
             }
-            else
+
+            // After an operator exists or has been created, show the login form
+            using (Login loginForm = new Login(loginControlador))
             {
-                Application.Run(new Login(loginControlador));
+                if (loginForm.ShowDialog() == DialogResult.OK)
+                {
+                    // If login is successful, proceed to launch the Menu
+                    BackofficeMenu backofficeMenu = new BackofficeMenu();
+                    Menu menuForm = new Menu(backofficeMenu);
+
+                    // Run the main application menu
+                    Application.Run(menuForm);
+                }
             }
         }
     }

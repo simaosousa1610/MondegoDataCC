@@ -111,6 +111,12 @@
     <Compile Include="Menu.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="NovoEditarRegisto.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NovoEditarRegisto.Designer.cs">
+      <DependentUpon>NovoEditarRegisto.cs</DependentUpon>
+    </Compile>
     <Compile Include="NovoOperador.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -133,6 +139,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Menu.resx">
       <DependentUpon>Menu.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NovoEditarRegisto.resx">
+      <DependentUpon>NovoEditarRegisto.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="NovoOperador.resx">
       <DependentUpon>NovoOperador.cs</DependentUpon>

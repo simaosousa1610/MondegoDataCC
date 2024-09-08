@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Web.Helpers;
 
 namespace Controladores
 {
@@ -81,6 +82,7 @@ namespace Controladores
                 {
                     intOperador = operador.intCodigo,
                     dtmDataAcao = DateTime.Now,
+                    jsoDados = Json.Encode(new { username = username, app = app }),
                     enuAcao = _context.Acao.FirstOrDefault(a => a.tipo == "login").intCodigo
                 };
 
